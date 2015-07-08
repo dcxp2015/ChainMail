@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"private" : true,
 	"dependencies": {
-		"autobahn": "latest",
+		"socket.io": "latest",
 		"mysql": "latest"
 	}
 }
