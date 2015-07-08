@@ -2,6 +2,7 @@
 	"name": "ChainMail",
 	"description": "Secure chat application",
 	"version": "0.0.1",
+	"private" : true,
 	"dependencies": {
 		"mysql": "latest"
 	}
