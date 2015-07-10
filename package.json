@@ -1,11 +1,11 @@
 {
-	"name": "ChainMail",
-	"description": "Secure chat application",
-	"version": "0.0.1",
-	"private" : true,
-	"dependencies": {
-		"express": "latest",
-		"socket.io": "latest",
-		"mysql": "latest"
-	}
+  "name": "node-mysql",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "^4.10.6",
+    "mysql": "^2.5.4",
+    "socket.io": "latest",
+    "fs": "latest",
+    "http": "latest"
+  }
 }
