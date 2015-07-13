@@ -1,8 +1,8 @@
-$(function() {
+// $(function() {
 	var $window = $(window);
 	var $usernameInput = $('.usernameInput');
 	var $messages = $('.messages');
-	var $messageInput = $('.messageInput');
+	var $inputMessage = $('.inputMessage');
 
 	var $loginPage = $('.login.page');
 	var $chatPage = $('.chat.page');
@@ -11,69 +11,67 @@ $(function() {
 	var connected = false;
 	var typing = false;
 	var $currentInput = $usernameInput.focus();
+	var canJoin = false;
+	var socket = io.connect();
+	console.log("connected");
 
-	var socket = io();
+
 
 
 	// Needs to add logic about not being in the database
 	function setUsername() {
-		username = cleanInput(%usernameInput.val().trim());
+		canJoin = false;
+		username = cleanInput($(".usernameInput").val().trim());
+		console.log(username);
+		socket.emit('add user', username);
+		console.log(canJoin);
 
-		if(username){
-			$loginPage.fadeOut();
-			$chatPage.show();
-			$loginPage.off('click');
-			$currentInput = $messageInput.focus();
-
-			socket.emit('add user', username);
-		}
 	}
 
 	function sendMessage() {
-		var message = $messageInput.val();
+		var message = $('.inputMessage').val();
+
+		$('.inputMessage').val('');
+		console.log(message);
+
 		message = cleanInput(message);
+		console.log('send');
 
-		if(message && connected){
-			$messageInput.val('');
-			addChatMessage({
-				username: username,
-				message: message
-			});
-			socket.emit('new message', message);
-		}
+		socket.emit('new message', message);
+
+		$inputMessage.val('');
+		addChatMessage({
+			username: username,
+			message: message
+		});
+
 	}
 
-	function addChatMessage() {
-		var $usernameDiv = $('<span class="username"/>').text(data.username);
-		var $messsageBodyDiv = $('<span class="messageBody"/>').text(data.message);
-
-		var typingClass = data.typing ? 'typing' : '';
-		var $messageDiv = $('<li class="message"/>').data('username', data.username).addClass(typingClass).append($usernameDiv, $messsageBodyDiv);
-
-		addMessageElement($messageDiv, options);
+	function addChatMessage(data) {
+		$('.messages').append("<li>" + data.username + ": " + data.message + "</li>");
 	}
 
-	function addMessageElement(el, options) {
-		var $el = #(el);
+	// function addMessageElement(el, options) {
+	// 	var $el = #(el);
 
-		if(!options){
-			options = {};
-		}
-		if(typeof options.fade === 'undefined'){
-			options.fade = true;
-		}
-		if(typeof options.prepend === 'undefined'){
-			options.prepend = false;
-		}
+	// 	if(!options){
+	// 		options = {};
+	// 	}
+	// 	if(typeof options.fade === 'undefined'){
+	// 		options.fade = true;
+	// 	}
+	// 	if(typeof options.prepend === 'undefined'){
+	// 		options.prepend = false;
+	// 	}
 
-		if(options.fade){
-			$el.hide*(.fadeIn(150));
-		}
-		if(options.prepend){
-			$messages.append($el);
-		}
-		$messages[0].scrollTop = $messages[0].scrollHeight;
-	}
+	// 	if(options.fade){
+	// 		$el.hide*(.fadeIn(150));
+	// 	}
+	// 	if(options.prepend){
+	// 		$messages.append($el);
+	// 	}
+	// 	$messages[0].scrollTop = $messages[0].scrollHeight;
+	// }
 
 	function cleanInput(input) {
 		return $('<div/>').text(input).text();
@@ -83,7 +81,7 @@ $(function() {
 		$currentInput.focus();
 	});
 
-	$messageInput.click(function() {
+	$inputMessage.click(function() {
 		$currentInput.focus();
 	})
 
@@ -93,6 +91,21 @@ $(function() {
 
 	socket.on('user joined', function(data) {
 		console.log(data.username + ' joined');
+		canJoin = data.canJoin;
+		console.log(canJoin);
+
+
+		if(canJoin){
+			$('.login.page').fadeOut();
+			$('.chat.page').show();
+			$('.login.page').off('click');
+			$currentInput = $inputMessage.focus();
+			console.log("joined");
+		}
+
+
+
+
 	});
 
 	socket.on('user left', function(data) {
@@ -100,4 +113,4 @@ $(function() {
 	});
 
 	
-});
+// });
